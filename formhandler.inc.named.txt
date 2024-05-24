@@ -1,0 +1,56 @@
+<?php
+if($_SERVER["REQUEST_METHOD"] == "POST")
+{
+$username = $_POST["username"];
+$password = $_POST["password"];
+$email = $_POST["email"];
+//sanitizeing data only when displaying output.
+//echo htmlspecialchars($username);
+
+try
+{
+require "dbh.inc.php";
+//$query = "INSERT INTO users (username, pwd, email) VALUES ($username,$password,$email);";
+//if i do this....it is easy to put an sql query in the input and harm my database.
+//hence use the following steps.
+//instead of passing actual values as parameters...we pass question marks.
+$query = "INSERT INTO users (username, pwd, email) VALUES (:username,:pwd,:email);";
+
+$stmt = $pdo->prepare($query);
+
+$stmt->bindParam(":username", $username);
+$stmt->bindParam(":pwd", $password);
+$stmt->bindParam(":email", $email);
+
+
+$stmt->execute();
+//closing connections.
+$pdo = null;
+$stmt = null;
+header("Location: ../index.php");
+
+die(); 
+// when running something which has some connections inside of it we use die().
+// exit(); //when you're closing off a script which doesn't have any sort of connection running....we use exit().
+/*
+all of these do the same thing with a slight variation.
+1)require_once
+2)require
+//same as include.....but it will also give you an error.
+
+3)include
+includes a file like require, but it cannot find the file, it gives a warning saying it can't file that file.
+4)include_once
+does the same thing but it is also going to check if the file has already been included earlier inside the script and if yes(it has been included in the script earlier) it gives you a slight warning.
+*/
+}
+catch(PDOException $e)
+{
+die("QueryFailed: " . $e->getMessage());
+
+}
+}
+else
+{
+    header("Location: ../index.php");
+}

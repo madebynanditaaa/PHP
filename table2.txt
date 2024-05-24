@@ -1,0 +1,28 @@
+https://www.youtube.com/watch?v=KMYZqb88Wm0&list=PL0eyrZgxdwhwwQQZA79OzYwl5ewA7HQih&index=17
+
+CREATE TABLE comments(
+id INT(11) NOT NULL AUTO_INCREMENT,
+    username VARCHAR(30) NOT NULL,
+    comment_text TEXT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIME,
+    UID INT(11) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(UID) REFERENCES users(id) ON DELETE CASCADE
+);
+
+default:
+ON DELETE NO ACTION
+error msg by default
+if i delete something from the users table,
+and that id wala data is used as reference in this table
+there is a relation between these tables...
+if i continue to delete....i will get an error.
+
+ON DELETE CASCADE
+if there is any tuple in child table which has reltionship with the deleted element in the parent table,
+all tuples of the child table which have deleted foreign key references
+will be deleted.
+
+
+ON DELETE SET NULL
+instead of deleting all the deleting foreign key id's it'll set it to null
